@@ -12,7 +12,7 @@ YouTube Shorts · TikTok · Reels a partir de una lista de hechos verificados, c
 [English](README.md) · [Español](README.es.md)
 
 <img src="docs/demo.gif" width="260" alt="Demo de FactReel: vídeo vertical con subtítulos palabra a palabra">
-<br><a href="docs/demo.mp4">▶ Verlo con sonido</a> · <i>guion, voz, imágenes y subtítulos hechos por FactReel</i>
+<br><a href="https://youtube.com/shorts/5DIG2RQZDoQ">▶ Verlo en YouTube</a> · <i>guion, voz, imágenes y subtítulos hechos por FactReel</i>
 
 </div>
 

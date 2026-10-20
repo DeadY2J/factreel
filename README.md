@@ -13,7 +13,7 @@ YouTube Shorts · TikTok · Reels, from a list of verified facts, with free AI s
 [English](README.md) · [Español](README.es.md)
 
 <img src="docs/demo.gif" width="260" alt="FactReel demo: vertical video with word-by-word subtitles">
-<br><a href="docs/demo.mp4">▶ Watch it with sound</a> · <i>script, voice, images and subtitles made by FactReel</i>
+<br><a href="https://youtube.com/shorts/5DIG2RQZDoQ">▶ Watch it on YouTube</a> · <i>script, voice, images and subtitles made by FactReel</i>
 
 </div>
 
