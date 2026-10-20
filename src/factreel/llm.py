@@ -15,7 +15,9 @@ from .config import Channel, read_secret
 
 
 class LLMError(RuntimeError):
-    pass
+    def __init__(self, message: str, fatal: bool = False):
+        super().__init__(message)
+        self.fatal = fatal  # retrying won't help (bad key, unknown model)
 
 
 class LLM:
@@ -37,7 +39,7 @@ class LLM:
     def chat(self, messages: list[dict], *, temperature: float | None = None, max_tokens: int = 2000,
              model: str | None = None) -> str:
         if not self.available:
-            raise LLMError("no API key for the LLM (set the variable named in [llm] api_key_env)")
+            raise LLMError("no API key for the LLM (set the variable named in [llm] api_key_env)", fatal=True)
         headers = {"Accept": "application/json", "Content-Type": "application/json"}
         if self.api_key:
             headers["Authorization"] = f"Bearer {self.api_key}"
@@ -47,6 +49,11 @@ class LLM:
             res = requests.post(f"{self.base_url}/chat/completions", headers=headers, json=body, timeout=self.timeout)
         except requests.RequestException as e:
             raise LLMError(f"request failed: {e}") from e
+        if res.status_code in (401, 403):
+            raise LLMError(f"HTTP {res.status_code}: the API key was rejected ({res.text[:150]})", fatal=True)
+        if res.status_code == 404:
+            raise LLMError(f"HTTP 404: model '{body['model']}' is not available at {self.base_url}. "
+                           "Pick another one in [llm] model (see docs/configuration.md)", fatal=True)
         if res.status_code != 200:
             raise LLMError(f"HTTP {res.status_code}: {res.text[:200]}")
         try:
