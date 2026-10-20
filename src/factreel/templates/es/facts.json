@@ -1,0 +1,61 @@
+{
+  "_note": "En los vídeos solo se puede decir lo que hay aquí. Añade las fuentes para ti y tus espectadores. Las noticias sin confirmar empiezan por 'RUMOR:'.",
+  "topics": [
+    {
+      "id": "distancia_luna",
+      "angle": "a qué distancia está de verdad la Luna",
+      "facts": [
+        "La distancia media entre la Tierra y la Luna es de unos 384.400 kilómetros.",
+        "La luz de la Luna tarda unos 1,3 segundos en llegar a la Tierra.",
+        "La Luna se aleja poco a poco de la Tierra, unos 3,8 centímetros cada año."
+      ],
+      "sources": ["https://science.nasa.gov/moon/facts/"],
+      "hashtags": ["#luna"]
+    },
+    {
+      "id": "luz_del_sol",
+      "angle": "la luz del Sol que ves es del pasado",
+      "facts": [
+        "La luz del Sol tarda unos 8 minutos y 20 segundos en llegar a la Tierra.",
+        "Si el Sol desapareciera, no lo notaríamos hasta unos 8 minutos después.",
+        "El Sol contiene alrededor del 99,8 por ciento de toda la masa del sistema solar."
+      ],
+      "sources": ["https://science.nasa.gov/sun/facts/"],
+      "hashtags": ["#sol"]
+    },
+    {
+      "id": "dia_venus",
+      "angle": "en Venus un día dura más que un año",
+      "facts": [
+        "Venus tarda unos 243 días terrestres en dar una vuelta sobre sí mismo.",
+        "Venus tarda unos 225 días terrestres en dar una vuelta al Sol.",
+        "Venus gira al revés que la mayoría de los planetas, así que allí el Sol sale por el oeste."
+      ],
+      "sources": ["https://science.nasa.gov/venus/venus-facts/"],
+      "hashtags": ["#venus"],
+      "weight": 2
+    },
+    {
+      "id": "olympus_mons",
+      "angle": "el volcán más grande del sistema solar",
+      "facts": [
+        "Olympus Mons, en Marte, es el volcán más grande del sistema solar.",
+        "Mide unos 22 kilómetros de altura, unas dos veces y media la altura del Everest.",
+        "Su base tiene unos 600 kilómetros de ancho."
+      ],
+      "sources": ["https://science.nasa.gov/mars/facts/"],
+      "hashtags": ["#marte"]
+    },
+    {
+      "id": "densidad_saturno",
+      "angle": "Saturno flotaría en el agua",
+      "facts": [
+        "La densidad media de Saturno es menor que la del agua.",
+        "Los anillos de Saturno están formados sobre todo por trozos de hielo de agua y roca.",
+        "Saturno es el segundo planeta más grande del sistema solar."
+      ],
+      "sources": ["https://science.nasa.gov/saturn/facts/"],
+      "hashtags": ["#saturno"]
+    }
+  ]
+}

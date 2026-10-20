@@ -1,0 +1,5 @@
+.env
+.factreel/
+output/
+logs/
+client_secrets.json

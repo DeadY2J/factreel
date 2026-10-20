@@ -1,0 +1,61 @@
+{
+  "_note": "Only these facts can be said in a video. Add sources for yourself and your viewers. Prefix unconfirmed news with 'RUMOR:'.",
+  "topics": [
+    {
+      "id": "moon_distance",
+      "angle": "how far away the Moon really is",
+      "facts": [
+        "The average distance between Earth and the Moon is about 384,400 kilometres.",
+        "Moonlight takes about 1.3 seconds to reach Earth.",
+        "The Moon is slowly moving away from Earth, about 3.8 centimetres every year."
+      ],
+      "sources": ["https://science.nasa.gov/moon/facts/"],
+      "hashtags": ["#moon"]
+    },
+    {
+      "id": "sunlight_delay",
+      "angle": "the sunlight you see is from the past",
+      "facts": [
+        "Light from the Sun takes about 8 minutes and 20 seconds to reach Earth.",
+        "If the Sun disappeared, we would not notice for about 8 minutes.",
+        "The Sun holds about 99.8 percent of all the mass in the Solar System."
+      ],
+      "sources": ["https://science.nasa.gov/sun/facts/"],
+      "hashtags": ["#sun"]
+    },
+    {
+      "id": "venus_day",
+      "angle": "a day on Venus is longer than its year",
+      "facts": [
+        "Venus takes about 243 Earth days to spin once on its axis.",
+        "Venus takes about 225 Earth days to orbit the Sun.",
+        "Venus spins backwards compared with most planets, so the Sun rises in the west there."
+      ],
+      "sources": ["https://science.nasa.gov/venus/venus-facts/"],
+      "hashtags": ["#venus"],
+      "weight": 2
+    },
+    {
+      "id": "olympus_mons",
+      "angle": "the biggest volcano in the Solar System",
+      "facts": [
+        "Olympus Mons on Mars is the largest volcano in the Solar System.",
+        "It is about 22 kilometres high, roughly two and a half times the height of Mount Everest.",
+        "Its base is about 600 kilometres wide."
+      ],
+      "sources": ["https://science.nasa.gov/mars/facts/"],
+      "hashtags": ["#mars"]
+    },
+    {
+      "id": "saturn_density",
+      "angle": "Saturn could float in water",
+      "facts": [
+        "Saturn's average density is lower than the density of water.",
+        "Saturn's rings are made mostly of chunks of water ice and rock.",
+        "Saturn is the second largest planet in the Solar System."
+      ],
+      "sources": ["https://science.nasa.gov/saturn/facts/"],
+      "hashtags": ["#saturn"]
+    }
+  ]
+}

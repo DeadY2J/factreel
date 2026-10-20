@@ -1,0 +1,16 @@
+name: Feature or provider request / Propuesta
+description: Idea, new language, new voice/image provider or uploader
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like? / ¿Qué te gustaría?
+    validations:
+      required: true
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Contribution
+      options:
+        - label: I'd like to implement it myself / Me gustaría implementarlo yo

@@ -1,0 +1,72 @@
+# Configuración del canal FactReel. Cambia solo lo que necesites: todo lo demás tiene un valor por defecto.
+# Referencia completa: https://github.com/DeadY2J/factreel/blob/main/docs/configuration.md
+
+[channel]
+name = "Señal Espacial"
+language = "es"                      # "es" o "en"
+sign_off = "Sígueme para un dato del espacio cada día."   # cierre fijo, se añade tras el guion de la IA
+
+# Cuenta atrás opcional ("Solo faltan 12 días para ..."). Deja la fecha vacía para desactivarla.
+[countdown]
+event = ""                           # p. ej. "el lanzamiento de Artemis"
+date = ""                            # AAAA-MM-DD
+
+[script]
+scenes = 4
+min_words = 30
+max_words = 56
+fact_check = true                    # segunda pasada de IA que rechaza lo que no esté en facts.json
+extra_rules = ""                     # cualquier otra norma para el guionista
+image_rules = "Deep-space and planetary scenery, realistic astronomy art, rich colours."
+
+# Cualquier API compatible con OpenAI: NVIDIA NIM (gratis), OpenRouter, Groq, OpenAI, Ollama (local)...
+[llm]
+base_url = "https://integrate.api.nvidia.com/v1"
+model = "nvidia/nemotron-3-super-120b-a12b"
+api_key_env = "NVIDIA_API_KEY"       # nombre de la variable de entorno, nunca la clave
+extra_body = { chat_template_kwargs = { enable_thinking = false } }
+
+[voice]
+chain = ["edge", "elevenlabs", "system"]   # se prueban en orden; también "cloudflare" y "dummy"
+
+[voice.edge]
+voice = "es-ES-AlvaroNeural"         # otras: es-ES-ElviraNeural, es-MX-JorgeNeural... (edge-tts --list-voices)
+rate = "+6%"
+
+[voice.elevenlabs]
+model = "eleven_multilingual_v2"
+
+[images]
+chain = ["cloudflare", "nvidia", "archive", "gradient"]
+style = ", cinematic lighting, highly detailed, vertical composition, no text, no letters, no logo, no watermark"
+
+[images.gradient]
+palette = ["#05051a", "#3c1aff", "#ff7a3c"]
+
+[subtitles]
+font = "Arial Black"
+highlight = "#FFD23C"
+
+[metadata]
+title_suffix = " #shorts"
+tags = ["espacio", "astronomía", "curiosidades del espacio", "planetas", "ciencia", "universo"]
+hashtags_fixed = ["#shorts", "#espacio"]
+hashtags_rotating = ["#astronomia", "#ciencia", "#universo", "#nasa", "#planetas", "#curiosidades", "#cosmos", "#aprende"]
+hashtags_rotating_count = 3
+disclaimer = "Imágenes y voz generadas con IA. Los datos se comprueban con fuentes públicas."
+description = """{teaser}
+
+{countdown}
+
+Fuentes:
+{sources}
+
+{music}
+
+{disclaimer}
+
+{hashtags}"""
+
+[youtube]
+privacy = "unlisted"                 # empieza en oculto y pasa a "public" cuando te guste el resultado
+category_id = "28"                   # 28 = Ciencia y tecnología, 20 = Videojuegos, 27 = Educación

@@ -1,0 +1,69 @@
+# FactReel channel settings. Only change what you need: everything else has a default.
+# Full reference: https://github.com/DeadY2J/factreel/blob/main/docs/configuration.md
+
+[channel]
+name = "Space Signal"
+language = "en"                      # "en" or "es"
+sign_off = "Follow for one space fact a day."   # fixed closing line, added after the AI script
+
+# Optional countdown ("Only 12 days until ..."). Leave date empty to disable it.
+[countdown]
+event = ""                           # e.g. "the Artemis launch"
+date = ""                            # YYYY-MM-DD
+
+[script]
+scenes = 4
+min_words = 30
+max_words = 56
+fact_check = true                    # second AI pass that rejects claims not in facts.json
+extra_rules = ""                     # anything else the writer must follow
+image_rules = "Deep-space and planetary scenery, realistic astronomy art, rich colours."
+
+# Any OpenAI-compatible endpoint: NVIDIA NIM (free), OpenRouter, Groq, OpenAI, Ollama (local)...
+[llm]
+base_url = "https://integrate.api.nvidia.com/v1"
+model = "nvidia/nemotron-3-super-120b-a12b"
+api_key_env = "NVIDIA_API_KEY"       # name of the environment variable, never the key itself
+extra_body = { chat_template_kwargs = { enable_thinking = false } }
+
+[voice]
+chain = ["edge", "cloudflare", "system"]   # tried in order; "elevenlabs" and "dummy" also available
+
+[voice.edge]
+voice = "en-US-AndrewNeural"         # list them all with: edge-tts --list-voices
+rate = "+4%"
+
+[images]
+chain = ["cloudflare", "nvidia", "archive", "gradient"]
+style = ", cinematic lighting, highly detailed, vertical composition, no text, no letters, no logo, no watermark"
+
+[images.gradient]
+palette = ["#05051a", "#3c1aff", "#ff7a3c"]
+
+[subtitles]
+font = "Arial Black"
+highlight = "#FFD23C"
+
+[metadata]
+title_suffix = " #shorts"
+tags = ["space", "astronomy", "space facts", "planets", "science", "universe"]
+hashtags_fixed = ["#shorts", "#space"]
+hashtags_rotating = ["#astronomy", "#science", "#universe", "#nasa", "#planets", "#facts", "#cosmos", "#learn"]
+hashtags_rotating_count = 3
+disclaimer = "Images and voice are AI-generated. Facts are checked against public sources."
+description = """{teaser}
+
+{countdown}
+
+Sources:
+{sources}
+
+{music}
+
+{disclaimer}
+
+{hashtags}"""
+
+[youtube]
+privacy = "unlisted"                 # start unlisted, switch to "public" when you are happy
+category_id = "28"                   # 28 = Science & Technology, 20 = Gaming, 27 = Education

@@ -1,0 +1,27 @@
+name: Bug report / Error
+description: Something doesn't work / Algo no funciona
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened? / ¿Qué pasó?
+      description: Command you ran and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Output of `factreel doctor`
+      render: text
+  - type: textarea
+    id: log
+    attributes:
+      label: Log (logs/factreel_YYYY-MM.log), without API keys
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: factreel --version, OS and Python version
+    validations:
+      required: true
