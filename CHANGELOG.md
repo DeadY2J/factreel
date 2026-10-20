@@ -3,12 +3,6 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
-
-### Fixed
-- FFmpeg builds without libass (Homebrew's default `ffmpeg`) now render the video without burned subtitles
-  and warn, instead of failing. `factreel doctor` explains how to get a full build.
-
 ## [0.1.0] - 2026-10-20
 
 ### Added
@@ -20,3 +14,5 @@ All notable changes to this project are documented here. The format follows
 - Word-by-word ASS subtitles, jitter-free zoom, cross-fades, loudness normalisation, music with credits.
 - Spanish and English templates; `init`, `make`, `topics`, `doctor`, `upload`, `run` commands.
 - Optional YouTube upload with synthetic-media declaration.
+- Works with FFmpeg builds without libass (e.g. Homebrew's `ffmpeg`): the video is rendered without burned
+  subtitles and a warning explains how to get a full build.
