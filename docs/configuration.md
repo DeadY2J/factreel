@@ -44,7 +44,7 @@ Any OpenAI-compatible endpoint.
 ```toml
 [llm]                                   # NVIDIA NIM (default, free credits)
 base_url = "https://integrate.api.nvidia.com/v1"
-model = "nvidia/nemotron-3-super-120b-a12b"
+model = "nvidia/nemotron-3-ultra-550b-a55b"
 api_key_env = "NVIDIA_API_KEY"
 extra_body = { chat_template_kwargs = { enable_thinking = false } }
 
