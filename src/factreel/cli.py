@@ -89,6 +89,7 @@ def cmd_topics(args: argparse.Namespace) -> int:
         print(f"{t['id']:<{width}}  {history.uses(t['id']):>4}  {t.get('weight', 1):>6}  {len(t['facts']):>5}  {t['angle']}")
     return 0
 
+
 def cmd_voices(args: argparse.Namespace) -> int:
     import asyncio
 
@@ -115,6 +116,8 @@ def cmd_voices(args: argparse.Namespace) -> int:
     for v in found:
         print(f"{v['ShortName']:<{width}}  {v['Gender']:<7}  {v['Locale']}")
     return 0
+
+
 def cmd_doctor(args: argparse.Namespace) -> int:
     from .doctor import run
 
@@ -174,10 +177,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     s = with_channel(sub.add_parser("topics", help="list topics and how often each was used"))
     s.set_defaults(func=cmd_topics)
+    
     s = sub.add_parser("voices", help="list available Edge voices")
     s.add_argument("--lang", help="language prefix, e.g. 'es' matches es-ES, es-MX...")
     s.set_defaults(func=cmd_voices)
-
+    
     s = with_channel(sub.add_parser("doctor", help="check FFmpeg, keys and every voice provider"))
     s.add_argument("--voices", action="store_true", help="only test the voices (fast, good for a scheduled task)")
     s.add_argument("--log", action="store_true", help="append results to logs/voice_health.log")
