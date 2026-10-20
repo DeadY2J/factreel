@@ -34,8 +34,9 @@ def check_tools() -> list[str]:
         filters = subprocess.run(["ffmpeg", "-hide_banner", "-filters"], capture_output=True, text=True).stdout
         for f in ("ass", "xfade", "loudnorm"):
             present = f" {f} " in filters
-            out.append(_line(OK if present else BAD, f"ffmpeg:{f}", "available" if present else
-                             "missing (use a full FFmpeg build with libass)"))
+            out.append(_line(OK if present else SKIP if f == "ass" else BAD, f"ffmpeg:{f}", "available" if present else
+                             "missing: macOS 'brew install ffmpeg-full', Windows a 'full' build from gyan.dev"
+                             + (" (videos will have no subtitles)" if f == "ass" else "")))
     return out
 
 

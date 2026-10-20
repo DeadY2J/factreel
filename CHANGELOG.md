@@ -3,6 +3,12 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- FFmpeg builds without libass (Homebrew's default `ffmpeg`) now render the video without burned subtitles
+  and warn, instead of failing. `factreel doctor` explains how to get a full build.
+
 ## [0.1.0] - 2026-10-20
 
 ### Added

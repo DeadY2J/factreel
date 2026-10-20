@@ -24,6 +24,20 @@ class RenderError(RuntimeError):
     pass
 
 
+_filters: str | None = None
+
+
+def has_filter(name: str) -> bool:
+    """True if this FFmpeg build has the filter (Homebrew's default ffmpeg, for example, ships without ``ass``)."""
+    global _filters
+    if _filters is None:
+        try:
+            _filters = subprocess.run(["ffmpeg", "-hide_banner", "-filters"], capture_output=True, text=True).stdout
+        except OSError:
+            _filters = ""
+    return f" {name} " in _filters
+
+
 def zoom_clip(img_path: Path, out_path: Path, w: int, h: int, length: float, zoom_in: bool, amount: float,
               fps: int) -> None:
     """Slow zoom WITHOUT jitter: each frame is an affine transform with sub-pixel bicubic sampling (Pillow)
@@ -93,6 +107,13 @@ def render(channel: Channel, images: list[Path], starts: list[float], audio: Pat
     ends = starts[1:] + [total]
     lengths = [ends[i] - starts[i] + (fade if i < n - 1 else 0) for i in range(n)]
 
+    if ass and not has_filter("ass"):
+        log("WARNING: this FFmpeg has no 'ass' filter (libass), so subtitles can't be burned in. "
+            "macOS: brew install ffmpeg-full | Windows: use a 'full' build from gyan.dev")
+        ass = None
+    if ass and ass.parent.resolve() != tmp.resolve():
+        raise RenderError("subtitles must live in the temp dir")
+
     cmd = ["ffmpeg", "-y", "-hide_banner", "-v", "error"]
     for i, (path, length) in enumerate(zip(images, lengths)):
         clip = tmp / f"zoom_{i}.mp4"
@@ -120,8 +141,7 @@ def render(channel: Channel, images: list[Path], starts: list[float], audio: Pat
     cmd += ["-filter_complex", ";".join(filters), "-map", "[vout]", "-map", "[aout]", "-t", f"{total:.3f}",
             "-c:v", "libx264", "-preset", "medium", "-crf", str(v["crf"]), "-pix_fmt", "yuv420p",
             "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", str(out.resolve())]
-    if ass and ass.parent.resolve() != tmp.resolve():
-        raise RenderError("subtitles must live in the temp dir")
+
     res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", cwd=tmp)
     if res.returncode != 0:
         raise RenderError(f"FFmpeg failed:\n{res.stderr[-1500:]}")
