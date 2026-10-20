@@ -154,7 +154,7 @@ def write_ai_script(channel: Channel, llm: LLM, topic: dict, days: int | None, u
             content = llm.chat(messages)
         except LLMError as e:
             warn(f"LLM error: {e}")
-            if "no API key" in str(e):
+            if e.fatal:
                 return None
             continue
         try:
@@ -201,4 +201,13 @@ def fallback_script(channel: Channel, topic: dict, days: int | None) -> dict:
     chunks = [" ".join(sentences[i:i + per]) for i in range(0, len(sentences), per)]
     angle = topic["angle"][:1].upper() + topic["angle"][1:]
     return {"title": angle[:55], "topic": topic["id"], "text": " ".join(chunks), "source": "facts",
-            "scenes": [{"text": c, "prompt": topic.get("image_prompt") or topic["angle"]} for c in chunks]}
+            "scenes": [{"text": c, "prompt": fallback_image_prompt(channel, topic)} for c in chunks]}
+
+
+def fallback_image_prompt(channel: Channel, topic: dict) -> str:
+    """Image prompt without AI: the topic's own ``image_prompt``, else the channel's image rules.
+    The angle alone is a poor prompt (often not in English, and image models only understand English well)."""
+    if topic.get("image_prompt"):
+        return topic["image_prompt"]
+    rules = str(channel["script"].get("image_rules") or "").strip()
+    return f"{rules} Theme: {topic['angle']}" if rules else topic["angle"]

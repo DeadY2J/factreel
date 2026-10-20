@@ -118,3 +118,23 @@ def test_fact_check_rejection(channel_en):
         replies += [answer(GOOD), flagged]
     story = write_ai_script(channel_en, FakeLLM(replies), TOPIC, None, set(), [])
     assert story is None
+
+
+class DeadLLM(FakeLLM):
+    def chat(self, messages, **kw):
+        from factreel.llm import LLMError
+
+        self.calls.append(messages)
+        raise LLMError("HTTP 404: model not available", fatal=True)
+
+
+def test_fatal_llm_error_stops_retrying(channel_en):
+    llm = DeadLLM([])
+    assert write_ai_script(channel_en, llm, TOPIC, None, set(), []) is None
+    assert len(llm.calls) == 1
+
+
+def test_fallback_image_prompt_uses_image_rules(channel_es):
+    topic = load_topics(channel_es.path("facts_file"))[0]
+    prompt = fallback_script(channel_es, topic, None)["scenes"][0]["prompt"]
+    assert prompt.startswith("Deep-space") and topic["angle"] in prompt
