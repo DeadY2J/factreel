@@ -11,6 +11,7 @@ from .config import Channel
 from .facts import History, choose_topic, days_until, load_topics
 from .llm import LLM
 from .log import log, warn
+from .review import review_subtitles
 from .script import fallback_script, write_ai_script
 
 
@@ -88,9 +89,21 @@ def make_video(channel: Channel, topic_id: str | None = None, *, offline: bool =
         video.unlink(missing_ok=True)  # never leave a broken file in the upload queue
         raise
 
+    subtitle_review: list[str] = []
+    review_cfg = channel.cfg.get("review") or {}
+    if review_cfg.get("subtitles") and ass and ass.is_file():
+        log("Running visual subtitle review...")
+        try:
+            subtitle_review = review_subtitles(channel, video, ass)
+            for issue in subtitle_review:
+                warn(f"Subtitle visual review: {issue}")
+        except Exception as e:
+            warn(f"Subtitle visual review failed: {e}")
+
     meta = metadata.build(channel, story, topic, days_until(channel), render.music_credit(channel, track))
     meta["voice"] = voice
     meta["subtitle_warnings"] = sub_issues
+    meta["subtitle_review"] = subtitle_review
     metadata.write(meta, video)
     if record_history:
         history.add(story, video.name)

@@ -95,6 +95,10 @@ DEFAULTS: dict[str, Any] = {
         "max_chars": 18,
         "uppercase": True,
     },
+    "review": {
+        "subtitles": False,
+        "model": "",
+    },
     "metadata": {
         "title_suffix": " #shorts",
         "tags": [],
