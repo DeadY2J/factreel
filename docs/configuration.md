@@ -48,6 +48,11 @@ model = "nvidia/nemotron-3-ultra-550b-a55b"
 api_key_env = "NVIDIA_API_KEY"
 extra_body = { chat_template_kwargs = { enable_thinking = false } }
 
+[llm]                                   # Google Gemini (free tier from Google AI Studio)
+base_url = "https://generativelanguage.googleapis.com/v1beta/openai"
+model = "gemini-3.5-flash-lite"
+api_key_env = "GOOGLE_API_KEY"          # get one at https://aistudio.google.com/apikey
+
 [llm]                                   # Ollama on your PC (no key)
 base_url = "http://localhost:11434/v1"
 model = "qwen3:14b"
@@ -114,6 +119,10 @@ timeout = 600
 palette = ["#1b0b3a", "#ff3c9a", "#ffb03c"]   # sky top, horizon, sun
 ```
 
+Gemini models also see images, so with the Gemini endpoint you can set
+`[images] text_check_model = "gemini-3.5-flash-lite"` to reject AI images with letters for free.
+The free tier has a daily request limit; each video uses 2-8 calls (script attempts + fact check).
+
 ## `[video]`
 
 `width 1080`, `height 1920`, `fps 30`, `fade 0.7` (s), `zoom 0.08` (8 % per scene), `tail 1.5` (s after the
@@ -123,6 +132,10 @@ last word), `voice_lufs -14`, `music_lufs -27`, `crf 20`.
 
 `enabled true`, `font "Arial Black"`, `size 84`, `color "#FFFFFF"`, `highlight "#FF3C9A"`, `outline 7`,
 `margin_v 640` (pixels from the bottom), `max_words 3`, `max_chars 18`, `uppercase true`.
+
+Before rendering, the on-screen subtitle lines are checked for visible typos (a number glued to an S such as
+`6S` instead of `6'S`, abbreviated months, stray symbols, repeated words, broken characters). Problems are shown
+as warnings and saved in the video's `.json` as `subtitle_warnings`; they never block the video.
 
 ## `[metadata]`
 

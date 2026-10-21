@@ -84,3 +84,17 @@ def test_description_with_unknown_placeholder(channel_en):
     channel_en.cfg["metadata"]["description"] = "{teaser} {unknown} {hashtags}"
     meta = metadata.build(channel_en, {"title": "T", "text": "A. B.", "topic": "x"}, {"id": "x"}, None)
     assert "{unknown}" in meta["description"]
+
+
+def test_subtitle_lint():
+    issues = subtitles.lint(["GTA 6S IS", "OUT NOV 19", "THE THE END", "ALL GOOD HERE", "STRAY {X}"])
+    joined = " ".join(issues)
+    assert "6S" in joined and "NOV 19" in joined and "THE THE" in joined and "stray" in joined
+    assert not any("ALL GOOD" in i for i in issues)
+    assert subtitles.lint(["GTA 6'S BEST", "EL 19 DE NOVIEMBRE"]) == []
+
+
+def test_write_ass_returns_lint(channel_en, tmp_path):
+    words = [(0, .2, "the"), (.3, .5, "the"), (.6, .9, "end.")]
+    issues = subtitles.write_ass(channel_en, "the the end.", words, tmp_path / "s.ass")
+    assert any("repeated word" in i for i in issues)

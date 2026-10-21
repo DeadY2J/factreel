@@ -3,6 +3,19 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Free subtitle check before rendering: warns about visible typos (e.g. `6S` instead of `6'S`, abbreviated
+  months, stray symbols, repeated words) and stores them as `subtitle_warnings` in the video metadata.
+- Docs: Google Gemini (free tier) as script AI through its OpenAI-compatible endpoint.
+
+### Changed
+- Default LLM is now `nvidia/nemotron-3-ultra-550b-a55b` (the previous default was retired by NVIDIA).
+- Fatal LLM errors (rejected key, unknown model) stop the retries at once and fall back to the facts-only script.
+- The facts-only script uses the channel's image rules for its image prompts.
+- Python 3.10-3.14 declared in the package metadata.
+
 ## [0.1.0] - 2026-10-20
 
 ### Added

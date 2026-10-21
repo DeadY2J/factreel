@@ -40,7 +40,7 @@ nunca por un mal día**: si se cae la voz, la API de imágenes o la IA del guion
   -14 LUFS y música de fondo opcional con créditos automáticos.
 - 🌍 **Español e inglés de serie** (prompts, meses, cuentas atrás). Otro idioma = un diccionario más.
 - 💸 **Gratis por defecto**: funciona sin ninguna clave; todo lo de pago es opcional y con tope de gasto.
-- 🔌 **Cualquier LLM compatible con OpenAI**: NVIDIA NIM, OpenRouter, Groq, OpenAI, Ollama, LM Studio, OmniRoute…
+- 🔌 **Cualquier LLM compatible con OpenAI**: NVIDIA NIM, Google Gemini (gratis), OpenRouter, Groq, OpenAI, Ollama, LM Studio, OmniRoute…
 - 📤 **Subida a YouTube opcional** marcando el contenido como "alterado o sintético", como exige YouTube.
 - ✅ **Comprueba cada vídeo** (resolución, audio, sin pantalla negra) antes de dejarlo en la cola de subida.
 

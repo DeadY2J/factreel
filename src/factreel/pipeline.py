@@ -10,7 +10,7 @@ from . import metadata, render, subtitles, tts
 from .config import Channel
 from .facts import History, choose_topic, days_until, load_topics
 from .llm import LLM
-from .log import log
+from .log import log, warn
 from .script import fallback_script, write_ai_script
 
 
@@ -61,10 +61,12 @@ def make_video(channel: Channel, topic_id: str | None = None, *, offline: bool =
     keep = [0] + [i for i in range(1, len(starts)) if starts[i] - starts[i - 1] > fade + 1]
     scenes, starts = [scenes[i] for i in keep], [starts[i] for i in keep]
 
-    ass = None
+    ass, sub_issues = None, []
     if channel["subtitles"]["enabled"] and words:
         ass = tmp / "subs.ass"
-        subtitles.write_ass(channel, story["text"], words, ass)
+        sub_issues = subtitles.write_ass(channel, story["text"], words, ass)
+        for issue in sub_issues:
+            warn(f"Subtitle check: {issue}")
 
     if offline and image_chain is None:
         image_chain = ["archive", "gradient"]
@@ -88,6 +90,7 @@ def make_video(channel: Channel, topic_id: str | None = None, *, offline: bool =
 
     meta = metadata.build(channel, story, topic, days_until(channel), render.music_credit(channel, track))
     meta["voice"] = voice
+    meta["subtitle_warnings"] = sub_issues
     metadata.write(meta, video)
     if record_history:
         history.add(story, video.name)

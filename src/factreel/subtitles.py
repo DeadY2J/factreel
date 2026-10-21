@@ -78,7 +78,30 @@ def _clean(word: str, upper: bool) -> str:
     return re.sub(r"[\"“”«»]", "", re.sub(r"(?<![\w])['‘’]|['‘’](?![\w])", "", word))
 
 
-def write_ass(channel: Channel, text: str, words: list[Word], path: Path) -> None:
+# Visible typos that can be detected without any API (idea from a real channel's post-render review)
+LINT_RULES = [
+    (re.compile(r"\b\d+S\b"), "number glued to an S (lost apostrophe, e.g. 6S instead of 6'S)"),
+    (re.compile(r"\b(JAN|FEB|MAR|APR|JUN|JUL|AUG|SEPT?|OCT|NOV|DEC|ENE|ABR|AGO|DIC)\b\.?(?=\s+\d)", re.I),
+     "abbreviated month (sounds wrong when read aloud)"),
+    (re.compile(r"[{}\\|<>_~^]"), "stray symbol"),
+    (re.compile(r"(?<![\w'])(\w+)\s+\1\b", re.I), "repeated word"),
+    (re.compile(r"\uFFFD|\?{2,}"), "broken character (encoding problem)"),
+]
+
+
+def lint(lines: list[str]) -> list[str]:
+    """Typos visible in the on-screen subtitle lines. Returns human-readable warnings (empty = fine)."""
+    issues, seen = [], set()
+    for text in lines:
+        for rx, why in LINT_RULES:
+            if rx.search(text) and (why, text) not in seen:
+                seen.add((why, text))
+                issues.append(f"{why}: '{text}'")
+    return issues
+
+
+def write_ass(channel: Channel, text: str, words: list[Word], path: Path) -> list[str]:
+    """Write the .ass file and return the lint warnings for the lines shown on screen."""
     s = channel["subtitles"]
     w, h = int(channel["video"]["width"]), int(channel["video"]["height"])
     primary = "&H00" + ass_color(s["color"])[2:-1]  # style colours are &HAABBGGRR
@@ -96,6 +119,7 @@ def write_ass(channel: Channel, text: str, words: list[Word], path: Path) -> Non
     hl, base = ass_color(s["highlight"]), ass_color(s["color"])
     groups = group_words(attach_punctuation(text, words), int(s["max_words"]), int(s["max_chars"]))
     lines = [header]
+    shown = [" ".join(_clean(w, s["uppercase"]) for _, _, w in group) for group in groups]
     for g, group in enumerate(groups):
         next_start = groups[g + 1][0][0] if g + 1 < len(groups) else None
         group_end = group[-1][1] + 0.4 if next_start is None else min(group[-1][1] + 0.4, next_start)
@@ -106,3 +130,4 @@ def write_ass(channel: Channel, text: str, words: list[Word], path: Path) -> Non
             pop = "{\\fscx80\\fscy80\\t(0,90,\\fscx100\\fscy100)}" if k == 0 else ""
             lines.append(f"Dialogue: 0,{ass_time(start)},{ass_time(max(end, start + 0.05))},Default,,0,0,0,,{pop}{' '.join(parts)}\n")
     path.write_text("".join(lines), encoding="utf-8")
+    return lint(shown)

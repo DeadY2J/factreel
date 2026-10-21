@@ -42,7 +42,7 @@ takes over.
   voice normalised to -14 LUFS, optional background music with automatic credits.
 - 🌍 **Spanish and English first-class** (prompts, month names, countdowns). More languages = one dict.
 - 💸 **Free by default**: runs with zero API keys; every paid service is optional and budget-capped.
-- 🔌 **Any OpenAI-compatible LLM**: NVIDIA NIM, OpenRouter, Groq, OpenAI, Ollama, LM Studio, OmniRoute…
+- 🔌 **Any OpenAI-compatible LLM**: NVIDIA NIM, Google Gemini (free tier), OpenRouter, Groq, OpenAI, Ollama, LM Studio, OmniRoute…
 - 📤 **Optional YouTube upload** with the "altered or synthetic content" flag set for you.
 - ✅ **Verifies every render** (resolution, audio, no black screen) before it reaches the upload queue.
 
