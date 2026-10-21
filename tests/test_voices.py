@@ -1,6 +1,5 @@
+import edge_tts
 import pytest
-
-edge_tts = pytest.importorskip("edge_tts")
 
 from factreel.cli import main
 

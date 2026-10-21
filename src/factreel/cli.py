@@ -174,7 +174,7 @@ def build_parser() -> argparse.ArgumentParser:
     s = with_channel(sub.add_parser("make", help="generate video(s) into output/"))
     make_args(s)
     s.set_defaults(func=cmd_make)
-    
+
     s = with_channel(sub.add_parser("topics", help="list topics and how often each was used"))
     s.set_defaults(func=cmd_topics)
 

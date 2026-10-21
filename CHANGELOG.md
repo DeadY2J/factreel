@@ -6,6 +6,7 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- `factreel voices [--lang es]` lists the Edge voices for a language (thanks @Nurana100!).
 - Free subtitle check before rendering: warns about visible typos (e.g. `6S` instead of `6'S`, abbreviated
   months, stray symbols, repeated words) and stores them as `subtitle_warnings` in the video metadata.
 - Docs: Google Gemini (free tier) as script AI through its OpenAI-compatible endpoint.
