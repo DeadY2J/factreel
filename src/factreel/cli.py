@@ -1,4 +1,4 @@
-"""Command line: ``factreel init | make | topics | doctor | upload | run``."""
+"""Command line: ``factreel init | make | topics | doctor | voices | upload | run``."""
 from __future__ import annotations
 
 import argparse
@@ -90,6 +90,34 @@ def cmd_topics(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_voices(args: argparse.Namespace) -> int:
+    import asyncio
+
+    import edge_tts
+
+    try:
+        voices = asyncio.run(edge_tts.list_voices())
+    except Exception as e:  # noqa: BLE001 - network errors, etc.
+        error(f"Could not list voices: {type(e).__name__}: {e}")
+        return 1
+
+    prefix = (args.lang or "").lower()
+
+    def matches(locale: str) -> bool:
+        locale = locale.lower()
+        return not prefix or locale == prefix or locale.startswith(prefix + "-")
+
+    found = sorted((v for v in voices if matches(v["Locale"])), key=lambda v: v["ShortName"])
+    if not found:
+        error(f"No voices found for language '{args.lang}'")
+        return 1
+    width = max(len(v["ShortName"]) for v in found)
+    print(f"{'name':<{width}}  gender   locale")
+    for v in found:
+        print(f"{v['ShortName']:<{width}}  {v['Gender']:<7}  {v['Locale']}")
+    return 0
+
+
 def cmd_doctor(args: argparse.Namespace) -> int:
     from .doctor import run
 
@@ -146,9 +174,13 @@ def build_parser() -> argparse.ArgumentParser:
     s = with_channel(sub.add_parser("make", help="generate video(s) into output/"))
     make_args(s)
     s.set_defaults(func=cmd_make)
-
+    
     s = with_channel(sub.add_parser("topics", help="list topics and how often each was used"))
     s.set_defaults(func=cmd_topics)
+
+    s = sub.add_parser("voices", help="list available Edge voices")
+    s.add_argument("--lang", help="language prefix, e.g. 'es' matches es-ES, es-MX...")
+    s.set_defaults(func=cmd_voices)
 
     s = with_channel(sub.add_parser("doctor", help="check FFmpeg, keys and every voice provider"))
     s.add_argument("--voices", action="store_true", help="only test the voices (fast, good for a scheduled task)")
