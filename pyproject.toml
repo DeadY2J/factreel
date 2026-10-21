@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "factreel"
-version = "0.1.0"
+version = "0.1.1"
 description = "Fact-checked faceless short videos (YouTube Shorts, TikTok, Reels) from a list of verified facts: AI script with anti-hallucination guards, voice fallback chain, karaoke subtitles and FFmpeg render."
 readme = "README.md"
 license = "MIT"

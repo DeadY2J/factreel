@@ -3,7 +3,7 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.1.1] - 2026-10-21
 
 ### Added
 - `factreel voices [--lang es]` lists the Edge voices for a language (thanks @Nurana100!).
