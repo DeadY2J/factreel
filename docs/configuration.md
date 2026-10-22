@@ -137,6 +137,28 @@ Before rendering, the on-screen subtitle lines are checked for visible typos (a 
 `6S` instead of `6'S`, abbreviated months, stray symbols, repeated words, broken characters). Problems are shown
 as warnings and saved in the video's `.json` as `subtitle_warnings`; they never block the video.
 
+## `[review]`
+
+Optional visual subtitle review after render: samples up to 12 frames evenly across the video and asks a vision
+model to verify that on-screen subtitles match the script and render without defects (such as clipping or glitches).
+Results are stored in the video's `.json` metadata as `subtitle_review`. Problems are shown as warnings and never
+block or delete the video.
+
+The review reuses the existing `[llm]` endpoint and credentials (`base_url`, `api_key_env`, `timeout`, `extra_body`).
+
+| Key | Default | |
+| --- | --- | --- |
+| `subtitles` | `false` | enable post-render visual review of subtitles |
+| `model` | `""` | vision model name passed to the `[llm]` endpoint |
+
+For example, when using Google Gemini as your LLM provider (`generativelanguage.googleapis.com`), you can configure its lightweight vision model for subtitle review:
+
+```toml
+[review]
+subtitles = true
+model = "gemini-3.5-flash-lite"
+```
+
 ## `[metadata]`
 
 | Key | |

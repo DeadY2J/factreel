@@ -102,9 +102,27 @@ def normalize_caption(text: str) -> str:
     return "".join(ch.upper() for ch in text if ch.isalnum())
 
 
-def extract_frame(video_path: Path, timestamp: float, out_path: Path) -> bool:
-    """Extract a single frame from video at timestamp using FFmpeg."""
-    cmd = [
+def sample_captions(captions: list[CaptionEntry], max_samples: int = 12) -> list[CaptionEntry]:
+    """Sample at most max_samples captions distributed evenly across the video.
+
+    If len(captions) <= max_samples, returns all captions.
+    If len(captions) > max_samples, selects max_samples indices from beginning to end
+    without duplicates, preserving chronological order.
+    """
+    if max_samples <= 0:
+        return []
+    n = len(captions)
+    if n <= max_samples:
+        return list(captions)
+    if max_samples == 1:
+        return [captions[0]]
+    indices = [round(i * (n - 1) / (max_samples - 1)) for i in range(max_samples)]
+    return [captions[i] for i in indices]
+
+
+def build_extract_frame_cmd(video_path: Path | str, timestamp: float, out_path: Path | str) -> list[str]:
+    """Build the FFmpeg command to extract and scale a single frame to 540px wide."""
+    return [
         "ffmpeg",
         "-y",
         "-hide_banner",
@@ -114,12 +132,19 @@ def extract_frame(video_path: Path, timestamp: float, out_path: Path) -> bool:
         f"{timestamp:.3f}",
         "-i",
         str(video_path),
+        "-vf",
+        "scale=540:-1",
         "-frames:v",
         "1",
         "-q:v",
         "2",
         str(out_path),
     ]
+
+
+def extract_frame(video_path: Path, timestamp: float, out_path: Path) -> bool:
+    """Extract a single frame from video at timestamp using FFmpeg."""
+    cmd = build_extract_frame_cmd(video_path, timestamp, out_path)
     try:
         res = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
         if res.returncode != 0 or not out_path.is_file() or out_path.stat().st_size == 0:
@@ -169,8 +194,8 @@ def _review_subtitles(channel: Channel, video: Path, ass_path: Path) -> list[str
     if not captions:
         return []
 
-    # Sample middle timestamp of each selected caption, up to 12 frames total
-    selected = captions[:12]
+    # Sample up to 12 captions distributed evenly across the video
+    selected = sample_captions(captions, max_samples=12)
 
     with tempfile.TemporaryDirectory(prefix="factreel_review_") as tmp_dir:
         extracted: list[dict[str, Any]] = []
@@ -215,7 +240,7 @@ def _review_subtitles(channel: Channel, video: Path, ass_path: Path) -> list[str
             content.append(
                 {
                     "type": "text",
-                    "text": f"Frame {item['n']} (expected caption: '{item['entry'].text}'):",
+                    "text": f"Frame {item['n']}:",
                 }
             )
             content.append(

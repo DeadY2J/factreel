@@ -4,11 +4,14 @@ from factreel.config import Channel
 from factreel.llm import LLM
 from factreel.pipeline import make_video
 from factreel.review import (
+    CaptionEntry,
+    build_extract_frame_cmd,
     clean_ass_text,
     normalize_caption,
     parse_ass_dialogues,
     parse_ass_time,
     review_subtitles,
+    sample_captions,
 )
 
 from .conftest import needs_ffmpeg
@@ -138,6 +141,68 @@ def test_normalize_caption():
     assert normalize_caption("¡Hola! ¿Todo bien en 2026?") == "HOLATODOBIENEN2026"
     assert normalize_caption("¡Hola! ¿Todo bien?") == "HOLATODOBIEN"
     assert normalize_caption("") == ""
+
+
+def test_sample_captions():
+    # Empty list
+    assert sample_captions([]) == []
+
+    # max_samples <= 0
+    c5 = [CaptionEntry(text=f"c{i}", start=float(i), end=float(i + 1)) for i in range(5)]
+    assert sample_captions(c5, max_samples=0) == []
+    assert sample_captions(c5, max_samples=-2) == []
+
+    # max_samples == 1 (regression test for zero division when max_samples == 1)
+    assert sample_captions([], max_samples=1) == []
+    assert sample_captions([c5[0]], max_samples=1) == [c5[0]]
+    assert sample_captions(c5, max_samples=1) == [c5[0]]
+
+    # Fewer than 12
+    assert sample_captions(c5) == c5
+
+    # Exactly 12
+    c12 = [CaptionEntry(text=f"c{i}", start=float(i), end=float(i + 1)) for i in range(12)]
+    assert sample_captions(c12) == c12
+
+    # More than 12 (13 items)
+    c13 = [CaptionEntry(text=f"c{i}", start=float(i), end=float(i + 1)) for i in range(13)]
+    sampled_13 = sample_captions(c13)
+    assert len(sampled_13) == 12
+    assert sampled_13[0] == c13[0]
+    assert sampled_13[-1] == c13[-1]
+    assert len(set(c.text for c in sampled_13)) == 12
+    assert [c.start for c in sampled_13] == sorted(c.start for c in sampled_13)
+
+    # 25 items: verify samples from both ends and distributed across beginning, middle, and end
+    c25 = [CaptionEntry(text=f"c{i}", start=float(i), end=float(i + 1)) for i in range(25)]
+    sampled_25 = sample_captions(c25)
+    assert len(sampled_25) == 12
+    assert sampled_25[0] == c25[0]
+    assert sampled_25[-1] == c25[24]
+    assert len(set(c.text for c in sampled_25)) == 12
+    starts = [int(c.start) for c in sampled_25]
+    assert starts[0] == 0 and starts[-1] == 24
+    assert any(10 <= s <= 14 for s in starts)
+
+    # 100 items: endpoints and strictly increasing
+    c100 = [CaptionEntry(text=f"c{i}", start=float(i), end=float(i + 1)) for i in range(100)]
+    sampled_100 = sample_captions(c100)
+    assert len(sampled_100) == 12
+    assert sampled_100[0] == c100[0]
+    assert sampled_100[-1] == c100[99]
+    assert len(set(c.text for c in sampled_100)) == 12
+    assert [c.start for c in sampled_100] == sorted(c.start for c in sampled_100)
+
+
+def test_build_extract_frame_cmd():
+    cmd = build_extract_frame_cmd("video.mp4", 4.5, "frame.jpg")
+    assert cmd[:6] == ["ffmpeg", "-y", "-hide_banner", "-v", "error", "-ss"]
+    assert cmd[6] == "4.500"
+    assert cmd[7:9] == ["-i", "video.mp4"]
+    assert "-vf" in cmd
+    vf_idx = cmd.index("-vf")
+    assert cmd[vf_idx + 1] == "scale=540:-1"
+    assert cmd[-1] == "frame.jpg"
 
 
 def make_dummy_channel(tmp_path, review_enabled=True, model="vision-v1") -> Channel:
@@ -325,6 +390,7 @@ def test_review_caps_at_12_frames(tmp_path, monkeypatch):
     monkeypatch.setattr("factreel.review.extract_frame", mock_extract)
 
     sent_content = []
+    sampled_indices = [round(k * 19 / 11) for k in range(12)]
 
     def mock_chat(self, messages, *, temperature=None, max_tokens=2000, model=None):
         sent_content.extend(messages[0]["content"])
@@ -332,7 +398,7 @@ def test_review_caps_at_12_frames(tmp_path, monkeypatch):
         return json.dumps(
             {
                 "frames": [
-                    {"n": i, "caption": f"Caption {i - 1}", "ok": True, "problem": ""}
+                    {"n": i, "caption": f"Caption {sampled_indices[i - 1]}", "ok": True, "problem": ""}
                     for i in range(1, image_count + 1)
                 ]
             }
@@ -343,8 +409,54 @@ def test_review_caps_at_12_frames(tmp_path, monkeypatch):
     warnings = review_subtitles(channel, video, ass)
     assert warnings == []
     assert len(extracted_ts) == 12
+    # Verify samples cover the entire range from beginning (0.4s) to end (19.4s)
+    assert extracted_ts[0] == 0.4
+    assert extracted_ts[-1] == 19.4
     image_parts = [c for c in sent_content if c.get("type") == "image_url"]
     assert len(image_parts) == 12
+
+
+def test_review_prompt_excludes_expected_caption(tmp_path, monkeypatch):
+    channel = make_dummy_channel(tmp_path)
+    monkeypatch.setenv("TEST_KEY", "dummy-key")
+
+    video = tmp_path / "test.mp4"
+    video.write_bytes(b"dummy video")
+
+    secret_text = "SECRET_CAPTION_DO_NOT_LEAK"
+    ass = tmp_path / "secret.ass"
+    ass.write_text(
+        "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
+        f"Dialogue: 0,0:00:00.00,0:00:01.00,Default,,0,0,0,,{secret_text}\n",
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr("factreel.review.extract_frame", lambda v, ts, o: o.write_bytes(b"x") and True)
+
+    captured_messages = []
+
+    def mock_chat(self, messages, *, temperature=None, max_tokens=2000, model=None):
+        captured_messages.extend(messages)
+        return json.dumps(
+            {"frames": [{"n": 1, "caption": "INDEPENDENT_MODEL_TRANSCRIPTION", "ok": True, "problem": ""}]}
+        )
+
+    monkeypatch.setattr(LLM, "chat", mock_chat)
+
+    warnings = review_subtitles(channel, video, ass)
+
+    # 1. Expected caption is NOT sent to the model in the prompt
+    content_parts = captured_messages[0]["content"]
+    text_parts = [p["text"] for p in content_parts if p.get("type") == "text"]
+    full_prompt = "\n".join(text_parts)
+    assert secret_text not in full_prompt
+    assert "expected caption" not in full_prompt.lower()
+    assert "Frame 1:" in full_prompt
+
+    # 2. Expected caption remains available locally for comparison
+    assert len(warnings) == 1
+    assert secret_text in warnings[0]
+    assert "INDEPENDENT_MODEL_TRANSCRIPTION" in warnings[0]
 
 
 def test_pipeline_review_disabled_by_default(channel_en, monkeypatch, tmp_path):
@@ -439,6 +551,9 @@ def test_full_offline_pipeline_with_visual_review(channel_en, monkeypatch):
     # User content contains both text instructions and image_url parts
     images = [c for c in chat_called[0]["messages"][0]["content"] if c.get("type") == "image_url"]
     assert 1 <= len(images) <= 12
+    # Verify expected caption is not leaked into prompt text parts
+    text_parts = [c["text"] for c in chat_called[0]["messages"][0]["content"] if c.get("type") == "text"]
+    assert not any("expected caption" in t.lower() for t in text_parts)
     # Verify data URL format
     assert images[0]["image_url"]["url"].startswith("data:image/jpeg;base64,")
     assert "subtitle_review" in result.meta
