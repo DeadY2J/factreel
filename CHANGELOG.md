@@ -6,7 +6,7 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
-- Optional visual subtitle review after render: samples up to 12 frames evenly across the video and checks them with a vision model, storing warnings in `subtitle_review` metadata.
+- Optional visual subtitle review after render: samples up to 12 frames evenly across the video and checks them with a vision model, storing warnings in `subtitle_review` metadata (thanks @bhupeshmukane!).
 
 ## [0.1.1] - 2026-10-21
 
