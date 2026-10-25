@@ -1,16 +1,10 @@
 <div align="center">
 
-
-
 # FactReel 🎬✅
-
-
 
 **Fact-checked faceless short videos, on autopilot.**
 
 YouTube Shorts · TikTok · Reels, from a list of verified facts, with free AI services and a fallback for everything.
-
-
 
 [![CI](https://github.com/DeadY2J/factreel/actions/workflows/ci.yml/badge.svg)](https://github.com/DeadY2J/factreel/actions/workflows/ci.yml)
 
@@ -20,29 +14,15 @@ YouTube Shorts · TikTok · Reels, from a list of verified facts, with free AI s
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-
-
 [English](README.md) · [Español](README.es.md)
-
-
-
-⭐ **If you find FactReel useful, please consider giving it a star and forking the repo to help us grow!**
-
-
 
 <img src="docs/demo.gif" width="260" alt="FactReel demo: vertical video with word-by-word subtitles">
 
 <br><a href="https://youtube.com/shorts/5DIG2RQZDoQ">▶ Watch it on YouTube</a> · <i>script, voice, images and subtitles made by FactReel</i>
 
-
-
 </div>
 
-
-
 ---
-
-
 
 Most "AI shorts generators" let a language model make things up. **FactReel doesn't.** You write the facts
 
@@ -54,47 +34,32 @@ find in your facts. Then it narrates it, draws the images, burns karaoke subtitl
 
 MP4 ready to upload.
 
-
-
 It grew out of a real channel that publishes a Short every day unattended, so it is built to **never stop
 
 on a bad day**: if the voice service, the image API or the script AI is down, the next option in the chain
 
 takes over.
 
-
-
 ## Features
 
-
-
-🛡️ **Anti-hallucination script writer**: number whitelist, repetition check, rumour labelling, a
+- 🛡️ **Anti-hallucination script writer**: number whitelist, repetition check, rumour labelling, a
   temperature-0 fact-check pass, and a facts-only fallback that is always correct.
-
-🗣️ **Voice fallback chain**: Microsoft Edge neural voices (free, no key) → ElevenLabs → Cloudflare
+- 🗣️ **Voice fallback chain**: Microsoft Edge neural voices (free, no key) → ElevenLabs → Cloudflare
   Aura → your OS's offline voice. `factreel doctor` tells you when a service is down and when it is back.
-
-🖼️ **Image fallback chain**: Cloudflare Workers AI FLUX → NVIDIA NIM FLUX → your own generator
+- 🖼️ **Image fallback chain**: Cloudflare Workers AI FLUX → NVIDIA NIM FLUX → your own generator
   (local GPU, ComfyUI…) → archive of previous images → procedural background that always works offline.
-
-💬 **Word-by-word subtitles** with the spoken word highlighted, synced from the TTS engine or Whisper.
-🎞️ **Smooth Ken Burns zoom without jitter** (sub-pixel rendering), cross-fades on scene changes,
+- 💬 **Word-by-word subtitles** with the spoken word highlighted, synced from the TTS engine or Whisper.
+- 🎞️ **Smooth Ken Burns zoom without jitter** (sub-pixel rendering), cross-fades on scene changes,
   voice normalised to -14 LUFS, optional background music with automatic credits.
-
-🌍 **Spanish and English first-class** (prompts, month names, countdowns). More languages = one dict.
-💸 **Free by default**: runs with zero API keys; every paid service is optional and budget-capped.
-🔌 **Any OpenAI-compatible LLM**: NVIDIA NIM, Google Gemini (free tier), OpenRouter, Groq, OpenAI, Ollama, LM Studio, OmniRoute…
-📤 **Optional YouTube upload** with the "altered or synthetic content" flag set for you.
-✅ **Verifies every render** (resolution, audio, no black screen) before it reaches the upload queue.
-
+- 🌍 **Spanish and English first-class** (prompts, month names, countdowns). More languages = one dict.
+- 💸 **Free by default**: runs with zero API keys; every paid service is optional and budget-capped.
+- 🔌 **Any OpenAI-compatible LLM**: NVIDIA NIM, Google Gemini (free tier), OpenRouter, Groq, OpenAI, Ollama, LM Studio, OmniRoute…
+- 📤 **Optional YouTube upload** with the "altered or synthetic content" flag set for you.
+- ✅ **Verifies every render** (resolution, audio, no black screen) before it reaches the upload queue.
 
 ## Quick start
 
-
-
 You need **Python 3.10+** and **[FFmpeg](https://ffmpeg.org/download.html)** on your PATH.
-
-
 
 ```bash
 
@@ -102,13 +67,9 @@ You need **Python 3.10+** and **[FFmpeg](https://ffmpeg.org/download.html)** on 
 
 winget install Gyan.FFmpeg
 
-
-
 # macOS
 
 brew install ffmpeg
-
-
 
 # Ubuntu / Debian
 
@@ -130,13 +91,9 @@ factreel make                           # -> output/20261020_180000_venus_day.mp
 
 ```
 
-
-
 That's it: with no keys at all you get a video with the free Edge voice, the facts read as they are and
 
 offline backgrounds. Add free keys to `.env` to unlock the AI script and AI images:
-
-
 
 | Key | What it unlocks | Cost |
 
@@ -150,11 +107,7 @@ offline backgrounds. Add free keys to `.env` to unlock the AI script and AI imag
 
 | `ELEVENLABS_API_KEY` | premium voice | optional |
 
-
-
 ## How it works
-
-
 
 ```mermaid
 
@@ -186,11 +139,7 @@ flowchart LR
 
 ```
 
-
-
 ## Your facts
-
-
 
 ```json
 
@@ -226,17 +175,11 @@ flowchart LR
 
 ```
 
-
-
 Prefix unconfirmed news with `RUMOR:` and the script will be forced to say so. Put topic ids in
 
 `queue.txt` to choose what goes out next; otherwise the least used topic is picked (`weight` > 1 = more often).
 
-
-
 ## Commands
-
-
 
 | Command | What it does |
 
@@ -256,21 +199,14 @@ Prefix unconfirmed news with `RUMOR:` and the script will be forced to say so. P
 
 | `factreel run` | make + upload, for a daily scheduled task |
 
-
-
 ## Documentation
 
-
-
-[Configuration reference](docs/configuration.md): every `channel.toml` option
-[Providers](docs/providers.md): voices, images, LLMs and how to add your own
-[YouTube upload](docs/youtube.md): OAuth setup in 5 minutes
-[Scheduling](docs/scheduling.md): Windows Task Scheduler, cron, GitHub Actions
-
+- [Configuration reference](docs/configuration.md): every `channel.toml` option
+- [Providers](docs/providers.md): voices, images, LLMs and how to add your own
+- [YouTube upload](docs/youtube.md): OAuth setup in 5 minutes
+- [Scheduling](docs/scheduling.md): Windows Task Scheduler, cron, GitHub Actions
 
 ## Responsible use
-
-
 
 FactReel declares AI-generated media when uploading, never invents facts on its own, and labels rumours.
 
@@ -278,17 +214,14 @@ Please keep it that way: cite your sources, respect trademarks and music licence
 
 mass-produce misleading content. Platforms penalise low-effort spam; good facts make good videos.
 
-
-
 ## Contributing
 
+Contributions are very welcome, and **you don't need to be an expert**: the open issues are small and well described. We are looking for help with:
 
+- 🌐 **New language packs:** Portuguese, French, German ([language issues](https://github.com/DeadY2J/factreel/labels/language))
+- 🎙️ **Local providers:** Piper TTS and local word timings with `faster-whisper`
+- 🛠️ **CLI tools:** JSON validation / linter
 
-Contributions are very welcome! We are actively looking for contributors to help with:
+👉 Start with the [Good First Issues](https://github.com/DeadY2J/factreel/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22). See also [CONTRIBUTING.md](CONTRIBUTING.md). Issues and PRs in English or Spanish are fine.
 
-🌐 **New language packs:** Portuguese, French, German ([View language issues](https://github.com/DeadY2J/factreel/labels/language))
-🎙️ **Local providers:** Piper TTS and local word timings with `faster-whisper`
-🛠️ **CLI tools:** JSON validation / linter
-
-
-👉 **Check out our [Good First Issues](https://github.com/DeadY2J/factreel/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) to get started!**
+If FactReel is useful to you, a ⭐ helps other people find it.

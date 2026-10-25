@@ -112,9 +112,15 @@ contenido engañoso. Las plataformas penalizan el spam; buenos datos hacen bueno
 
 ## Contribuir
 
-¡Las contribuciones son muy bienvenidas!, sobre todo idiomas nuevos, proveedores de voz e imagen y
-subidas a otras plataformas. Mira [CONTRIBUTING.md](CONTRIBUTING.md) y la [hoja de ruta](ROADMAP.md).
-Puedes escribir las issues y los PR en español o en inglés.
+¡Las contribuciones son muy bienvenidas, **no hace falta ser experto**! Las issues abiertas son pequeñas y están bien descritas. Buscamos ayuda con:
+
+- 🌐 **Nuevos idiomas:** portugués, francés, alemán ([issues de idiomas](https://github.com/DeadY2J/factreel/labels/language))
+- 🎙️ **Proveedores locales:** Piper TTS y tiempos de palabras locales con `faster-whisper`
+- 🛠️ **Herramientas de CLI:** validador / linter de JSON
+
+👉 Empieza por las [Good First Issues](https://github.com/DeadY2J/factreel/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22). Mira también [CONTRIBUTING.md](CONTRIBUTING.md) y la [hoja de ruta](ROADMAP.md). Puedes escribir issues y PR en español o en inglés.
+
+Si FactReel te resulta útil, una ⭐ ayuda a que otras personas lo encuentren.
 
 ## Licencia
 
