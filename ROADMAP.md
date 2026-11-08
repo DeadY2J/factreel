@@ -4,7 +4,7 @@ Ideas are tracked as GitHub issues. Want one? Comment on the issue and it's your
 
 ## Good first issues
 - [ ] Portuguese, French, Italian and German language packs (`lang.py` + templates)
-- [ ] `factreel voices --lang es`: list Edge voices for a language
+- [x] `factreel voices --lang es`: list Edge voices for a language (thanks @Nurana100)
 - [ ] `factreel validate`: lint `facts.json` (missing sources, facts without numbers or dates, very long facts)
 - [ ] More subtitle styles (box background, bottom-only, different pop animations)
 - [ ] Gradient provider: more scene presets (ocean, city skyline, forest)
