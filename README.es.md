@@ -102,7 +102,7 @@ Empieza por `RUMOR:` las noticias sin confirmar y el guion tendrá que decirlo. 
 
 ## Documentación
 
-- [Configuración](docs/configuration.md) · [Proveedores](docs/providers.md) · [Subida a YouTube](docs/youtube.md) · [Programar tareas](docs/scheduling.md) (en inglés)
+- [Configuración](docs/es/configuration-es.md) · [Proveedores](docs/es/providers-es.md) · [Subida a YouTube](docs/es/youtube-es.md) · [Programar tareas](docs/es/scheduling-es.md)
 
 ## Uso responsable
 
