@@ -32,4 +32,4 @@ Un proveedor de voz es una función `fn(channel, text, out_path) -> [(start_s, e
 
 Un proveedor de imágenes es `fn(channel, prompt, index, total) -> PIL.Image | None` en `src/factreel/images/providers.py`: devuelva `None` para dejar que el siguiente proveedor intente esta escena, lance `ImageError` si el proveedor es inutilizable (falta clave, servicio caído).
 
-Añada una prueba, una línea en este archivo y abra un *pull request*. Hay ideas en la [hoja de ruta](../ROADMAP.md)
+Añada una prueba, una línea en este archivo y abra un *pull request*. Hay ideas en la [hoja de ruta](../../ROADMAP.md)
