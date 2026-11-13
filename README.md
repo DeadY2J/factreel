@@ -206,6 +206,8 @@ Prefix unconfirmed news with `RUMOR:` and the script will be forced to say so. P
 - [YouTube upload](docs/youtube.md): OAuth setup in 5 minutes
 - [Scheduling](docs/scheduling.md): Windows Task Scheduler, cron, GitHub Actions
 
+* [Español](docs/es/configuration-es.md) · [Proveedores](docs/es/providers-es.md) · [Subida a YouTube](docs/es/youtube-es.md) · [Programar tareas](docs/es/scheduling-es.md)
+
 ## Responsible use
 
 FactReel declares AI-generated media when uploading, never invents facts on its own, and labels rumours.
