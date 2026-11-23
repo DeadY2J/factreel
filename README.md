@@ -216,6 +216,10 @@ Please keep it that way: cite your sources, respect trademarks and music licence
 
 mass-produce misleading content. Platforms penalise low-effort spam; good facts make good videos.
 
+## How it's built
+
+FactReel is developed with the help of Claude (Anthropic). I set the direction, write the issues and decide what gets merged; the tests and CI check the rest.
+
 ## Contributing
 
 Contributions are very welcome, and **you don't need to be an expert**: the open issues are small and well described. We are looking for help with:

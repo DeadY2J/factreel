@@ -110,6 +110,10 @@ FactReel declara el contenido generado con IA al subirlo, no se inventa datos y 
 Mantenlo así: cita tus fuentes, respeta marcas y licencias de música y no lo uses para producir en masa
 contenido engañoso. Las plataformas penalizan el spam; buenos datos hacen buenos vídeos.
 
+## Cómo está hecho
+
+FactReel se desarrolla con ayuda de Claude (Anthropic). Yo marco la dirección, redacto las issues y decido qué se incorpora; los tests y el CI comprueban el resto.
+
 ## Contribuir
 
 ¡Las contribuciones son muy bienvenidas, **no hace falta ser experto**! Las issues abiertas son pequeñas y están bien descritas. Buscamos ayuda con:
