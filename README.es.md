@@ -96,6 +96,7 @@ Empieza por `RUMOR:` las noticias sin confirmar y el guion tendrá que decirlo. 
 | `factreel make [-t TEMA] [-n 3]` | genera vídeos en `output/` |
 | `factreel make --offline --voice dummy` | vista previa al instante: sin IA, voz muda, imágenes sin conexión |
 | `factreel topics` | temas y cuántas veces se ha usado cada uno |
+| `factreel validate [--strict]` | revisa `facts.json` en busca de errores y fallos habituales antes de gastar cuota de API |
 | `factreel doctor [--voices --log]` | lo comprueba todo; `--log` es ideal para una tarea programada |
 | `factreel upload [--privacy unlisted]` | sube los vídeos pendientes a YouTube (`pip install "factreel[youtube]"`) |
 | `factreel run` | genera y sube, para la tarea programada diaria |

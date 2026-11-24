@@ -5,6 +5,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+- `factreel validate [--strict]` checks `facts.json` before generating: load errors exit with code 1; warnings for
+  missing sources, facts over 200 characters, topics with fewer than 2 facts, `RUMOR:` mixed with confirmed facts,
+  and ids with spaces or uppercase letters. `--strict` turns warnings into exit code 1 for CI (thanks @KarloZ7715!).
+
 ## [0.1.2] - 2026-11-13
 
 ### Added

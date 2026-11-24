@@ -182,21 +182,14 @@ Prefix unconfirmed news with `RUMOR:` and the script will be forced to say so. P
 ## Commands
 
 | Command | What it does |
-
 | --- | --- |
-
 | `factreel init DIR --lang es` | new channel folder from a template |
-
 | `factreel make [-t TOPIC] [-n 3]` | generate videos into `output/` |
-
 | `factreel make --offline --voice dummy` | instant preview: no AI, silent voice, offline images |
-
 | `factreel topics` | topics and how many times each was used |
-
+| `factreel validate [--strict]` | check `facts.json` for errors and common issues before spending API quota |
 | `factreel doctor [--voices --log]` | check everything; `--log` is perfect for a scheduled task |
-
 | `factreel upload [--privacy unlisted]` | upload pending videos to YouTube (`pip install "factreel[youtube]"`) |
-
 | `factreel run` | make + upload, for a daily scheduled task |
 
 ## Documentation
