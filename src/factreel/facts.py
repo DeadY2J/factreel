@@ -26,6 +26,8 @@ from pathlib import Path
 from .config import Channel
 from .log import log
 
+MAX_FACT_LEN = 200
+
 
 class FactsError(ValueError):
     pass
@@ -52,6 +54,28 @@ def load_topics(path: Path) -> list[dict]:
             raise FactsError(f"Topic '{t['id']}': 'facts' must be a list of non-empty strings")
         seen.add(t["id"])
     return topics
+
+
+def validate_topics(topics: list[dict], *, max_fact_len: int = MAX_FACT_LEN) -> list[str]:
+    """Return non-fatal lint warnings for already-loaded topics."""
+    warnings: list[str] = []
+    for t in topics:
+        tid = str(t["id"])
+        facts = t["facts"]
+        if any(c.isspace() or c.isupper() for c in tid):
+            warnings.append(f"Topic '{tid}': id contains spaces or uppercase letters")
+        sources = t.get("sources")
+        if not isinstance(sources, list) or not any(isinstance(s, str) and s.strip() for s in sources):
+            warnings.append(f"Topic '{tid}': missing 'sources'")
+        if len(facts) < 2:
+            warnings.append(f"Topic '{tid}': fewer than 2 facts ({len(facts)})")
+        for i, fact in enumerate(facts, 1):
+            if len(fact) > max_fact_len:
+                warnings.append(f"Topic '{tid}', fact #{i}: {len(fact)} chars (>{max_fact_len}, hard to narrate)")
+        rumors = sum(1 for f in facts if f.lstrip().upper().startswith("RUMOR:"))
+        if 0 < rumors < len(facts):
+            warnings.append(f"Topic '{tid}': mixes RUMOR: facts with confirmed facts (consider splitting)")
+    return warnings
 
 
 class History:

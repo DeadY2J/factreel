@@ -1,4 +1,4 @@
-"""Command line: ``factreel init | make | topics | doctor | voices | upload | run``."""
+"""Command line: ``factreel init | make | topics | validate | doctor | voices | upload | run``."""
 from __future__ import annotations
 
 import argparse
@@ -9,7 +9,7 @@ from pathlib import Path
 
 from . import __version__
 from .config import load_channel
-from .log import configure, error, log
+from .log import configure, error, log, warn
 
 RENAMES = {"env.example": ".env.example", "gitignore": ".gitignore"}
 
@@ -87,6 +87,27 @@ def cmd_topics(args: argparse.Namespace) -> int:
     print(f"{'id':<{width}}  uses  weight  facts  angle")
     for t in sorted(topics, key=lambda t: history.uses(t["id"])):
         print(f"{t['id']:<{width}}  {history.uses(t['id']):>4}  {t.get('weight', 1):>6}  {len(t['facts']):>5}  {t['angle']}")
+    return 0
+
+
+def cmd_validate(args: argparse.Namespace) -> int:
+    from .facts import FactsError, load_topics, validate_topics
+
+    channel = _channel(args)
+    path = channel.path("facts_file")
+    try:
+        topics = load_topics(path)
+    except FactsError as e:
+        error(str(e))
+        return 1
+    warnings = validate_topics(topics)
+    for msg in warnings:
+        warn(msg)
+    facts_count = sum(len(t["facts"]) for t in topics)
+    if warnings:
+        log(f"{len(topics)} topics, {facts_count} facts, {len(warnings)} warning(s).")
+        return 1 if args.strict else 0
+    log(f"✔ {path.name}: {len(topics)} topics, {facts_count} facts, no warnings.")
     return 0
 
 
@@ -177,6 +198,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     s = with_channel(sub.add_parser("topics", help="list topics and how often each was used"))
     s.set_defaults(func=cmd_topics)
+
+    s = with_channel(sub.add_parser("validate", help="check facts.json for errors and common issues"))
+    s.add_argument("--strict", action="store_true", help="exit with code 1 if there are warnings")
+    s.set_defaults(func=cmd_validate)
 
     s = sub.add_parser("voices", help="list available Edge voices")
     s.add_argument("--lang", help="language prefix, e.g. 'es' matches es-ES, es-MX...")
